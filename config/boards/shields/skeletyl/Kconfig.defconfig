@@ -1,0 +1,25 @@
+if SHIELD_SKELETYL_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Skeletyl"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_SKELETYL_LEFT || SHIELD_SKELETYL_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+# config ZMK_SPLIT_BLE
+#     default y
+
+# config CONFIG_USB
+#     default y
+
+# config CONFIG_BT
+#     default y
+endif
+

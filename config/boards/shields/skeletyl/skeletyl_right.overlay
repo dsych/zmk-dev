@@ -1,0 +1,15 @@
+#include "skeletyl.dtsi" // Notice that the main dtsi files are included in the overlay.
+
+&default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
+    col-offset = <6>;
+};
+
+&kscan0 {
+    col-gpios
+        = <&xiao_d 9 GPIO_ACTIVE_HIGH> // Row A from the schematic file
+        , <&xiao_d 6 GPIO_ACTIVE_HIGH> // Row B from the schematic file
+        , <&xiao_d 7 GPIO_ACTIVE_HIGH> // Row C from the schematic file
+        , <&xiao_d 8 GPIO_ACTIVE_HIGH> // Row D from the schematic file
+        , <&xiao_d 10 GPIO_ACTIVE_HIGH> // Row E from the schematic file
+        ;
+};
