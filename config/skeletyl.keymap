@@ -105,9 +105,9 @@ MIRYOKU_SHIFT_FUNCTION(u_caps_word, &caps_word, &kp CAPS)
 // |         |         |         |         |         |                       | OUT_TOGL|   BT_1  |   BT_2  |   BT_3  |   BT_4  |
 //                     |   L0    |   MUTE  |  STOP   |                       |         |         |  (hold) |
             bindings = <
-     &kp F1   &kp F2   &kp F3    &kp F4    &kp F5     &to DEFAULT             &none       &kp F6     &kp F7       &kp F8       &kp F9     &kp F10
-     &kp F11  &kp F12  &none     &none     &none      &none                   &none       &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_PP
-     &kp Z    &kp X    &kp C     &kp V     &kp B      &kp BSPC                &none       &u_out_tog &u_bt_sel_0 &u_bt_sel_1 &u_bt_sel_2 &u_ep_tog
+     &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &to DEFAULT             &none       &kp F6     &kp F7       &kp F8       &kp F9     &kp F10
+     &kp F11   &kp F12  &none     &none     &none      &kp C_MUTE              &none       &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_PP
+     &kp LSHFT &none    &none     &none     &none      &kp C_STOP              &none       &u_out_tog &u_bt_sel_0 &u_bt_sel_1 &u_bt_sel_2 &u_ep_tog
             >;
         };
     };
