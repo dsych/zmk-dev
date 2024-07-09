@@ -1,5 +1,69 @@
 #include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define U_STRINGIFY(x) #x
+#define U_MACRO(name,...) \
+/ { \
+  macros { \
+    name: name { \
+      label = U_STRINGIFY(ZM_ ## name); \
+      compatible = "zmk,behavior-macro"; \
+      #binding-cells = <0>; \
+      __VA_ARGS__ \
+    }; \
+  }; \
+};
+#define MIRYOKU_SHIFT_FUNCTION(NAME, BINDING, SHIFT_BINDING) \
+/ { \
+  behaviors { \
+    NAME: NAME { \
+      compatible = "zmk,behavior-mod-morph"; \
+      label = U_STRINGIFY(NAME); \
+      #binding-cells = <0>; \
+      bindings = <BINDING>, <SHIFT_BINDING>; \
+      mods = <(MOD_LSFT|MOD_RSFT)>; \
+    }; \
+  }; \
+};
+
+#define MIRYOKU_SHIFT_MACRO(NAME, BINDING, SHIFT_BINDING) \
+U_MACRO(u_macro_ ## NAME, wait-ms = <0>; bindings = <SHIFT_BINDING>;) \
+MIRYOKU_SHIFT_FUNCTION(NAME, BINDING, &u_macro_ ## NAME)
+
+// ======================================
+// Bluetooth profile definition
+// ======================================
+MIRYOKU_SHIFT_MACRO(u_bt_sel_0, &bt BT_SEL 0, &bt BT_SEL 0 &bt BT_CLR)
+MIRYOKU_SHIFT_MACRO(u_bt_sel_1, &bt BT_SEL 1, &bt BT_SEL 1 &bt BT_CLR)
+MIRYOKU_SHIFT_MACRO(u_bt_sel_2, &bt BT_SEL 2, &bt BT_SEL 2 &bt BT_CLR)
+MIRYOKU_SHIFT_MACRO(u_bt_sel_3, &bt BT_SEL 3, &bt BT_SEL 3 &bt BT_CLR)
+MIRYOKU_SHIFT_MACRO(u_bt_sel_4, &bt BT_SEL 4, &bt BT_SEL 4 &bt BT_CLR)
+
+// Toggle output
+MIRYOKU_SHIFT_FUNCTION(u_out_tog, &out OUT_TOG, &out OUT_USB)
+// ======================================
+// END Bluetooth profile definition
+// ======================================
+
+// Caps word or caps lock with a shift
+MIRYOKU_SHIFT_FUNCTION(u_caps_word, &caps_word, &kp CAPS)
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_tab {
+            timeout-ms = <50>;
+            key-positions = <0 17>;
+            bindings = <LEFT_COMMAND>, <&kp TAB>;
+        };
+    };
+};
+
+#define DEFAULT 0
+#define NUMBERS 1
+#define MEDIA 2
 
 / {
     keymap {
@@ -7,14 +71,40 @@
 
         default_layer {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// |    Q    |    W    |    E    |    R    |    T    |                       |    Y    |    U    |    I    |    O    |    P    |    \    |
-// |    A    |    S    |    D    |    F    |    G    |                       |    H    |    J    |    K    |    L    |    ;    |    '    |
-// |    Z    |    X    |    C    |    V    |    B    |                       |    N    |    M    |    ,    |    .    |    /    |  R CTRL |
-//                               |   GUI   |  CTRL   |   DEL   |  SPACE  | ESCAPE  |  |  RETURN |  SPACE  |   TAB   |   BSPC  |  R ALT  |
+// |    Q    |    W    |    E    |    R    |    T    |                       |    Y    |    U    |    I    |    O    |    P    |
+// |    A    |    S    |    D    |    F    |    G    |                       |    H    |    J    |    K    |    L    |    "    |
+// | SFT(Z)  |    X    |    C    |    V    |    B    |                       |    N    |    M    |    ,    |    .    | SHFT(/) |
+//                     | ALT(ESC)|   CMD   |CTRL(TAB)|                       |  ENTER  |L1(SPACE)| L2(BSP) |
             bindings = <
-     &kp Q    &kp W    &kp E     &kp R     &kp T      &kp LGUI                &kp LALT      &kp Y     &kp U     &kp I     &kp O     &kp P
-     &kp A    &kp S    &kp D     &kp F     &kp G      &kp LCTRL               &kp RET       &kp H     &kp J     &kp K     &kp L     &kp SEMI
-     &kp Z    &kp X    &kp C     &kp V     &kp B      &kp BSPC                &kp SPACE     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH
+     &kp Q       &kp W    &kp E     &kp R     &kp T      &mt LALT ESC            &kp ENTER         &kp Y     &kp U     &kp I     &kp O     &kp P
+     &kp A       &kp S    &kp D     &kp F     &kp G      &kp LGUI                &lt NUMBERS SPACE &kp H     &kp J     &kp K     &kp L     &kp SQT
+     &mt LSHFT Z &kp X    &kp C     &kp V     &kp B      &mt LCTRL TAB           &lt MEDIA BSPC    &kp N     &kp M     &kp COMMA &kp DOT   &mt LSHFT FSLH
+            >;
+        };
+
+        numbers_layer {
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |    1    |    2    |    3    |    4    |    5    |                       |    6    |    7    |    8    |    9    |    0    |
+// |    `    |   ALT   |  CTRL   |   CMD   |         |                       |  LEFT   |  DOWN   |   UP    |  RIGHT  |    ;    |
+// |  SHFT   |  HOME   |  PGUP   |  PGDWN  |   END   |                       |    -_   |    =+   |    [{   |    ]}   | SHFT(\|)|
+//                     |   L0    |  CTRL   | CAPSWRD |                       |         |  (hold) |         |
+            bindings = <
+     &kp 1     &kp 2    &kp 3     &kp 4     &kp 5      &to DEFAULT             &none         &kp 6     &kp 7     &kp 8     &kp 9     &kp 0
+     &kp GRAVE &kp LALT &kp LCTRL &kp LGUI  &none      &kp LCTRL               &none         &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT &kp SEMI
+     &kp LSHFT &kp HOME &kp PG_UP &kp PG_DN &kp END    &u_caps_word            &none         &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT  &mt LSHFT BSLH
+            >;
+        };
+
+        media_layer {
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |   F1    |   F2    |   F3    |   F4    |   F5    |                       |   F6    |   F7    |   F8    |   F9    |  F10    |
+// |   F11   |   F12   |         |         |         |                       |  PREV   |  VOL-   |  VOL+   |  NEXT   |  PLAY   |
+// |         |         |         |         |         |                       | OUT_TOGL|   BT_1  |   BT_2  |   BT_3  |   BT_4  |
+//                     |   L0    |   MUTE  |  STOP   |                       |         |         |  (hold) |
+            bindings = <
+     &kp F1   &kp F2   &kp F3    &kp F4    &kp F5     &to DEFAULT             &none       &kp F6     &kp F7       &kp F8       &kp F9     &kp F10
+     &kp F11  &kp F12  &none     &none     &none      &none                   &none       &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_PP
+     &kp Z    &kp X    &kp C     &kp V     &kp B      &kp BSPC                &none       &u_out_tog &u_bt_sel_0 &u_bt_sel_1 &u_bt_sel_2 &u_bt_sel_3
             >;
         };
     };
